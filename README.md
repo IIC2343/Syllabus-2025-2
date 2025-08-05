@@ -27,7 +27,7 @@ Habrá 3 interrogaciones, donde se evaluarán los aspectos teóricos del conteni
 | :--------- | :------------------------ |
 | I1         | viernes 12 de septiembre, 17:30 hrs.|
 | I2         | miércoles 29 de octubre, 17:30 hrs. |
-| I3     | jueves 11 de diciembre, horario por confirmar  |
+| I3     | jueves 11 de diciembre, 17:30 hrs.  |
 
 
 

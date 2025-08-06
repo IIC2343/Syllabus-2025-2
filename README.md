@@ -18,6 +18,23 @@ Bienvenido al syllabus del curso de Arquitectura de Computadores. En el reposito
 | -------------------: | ---------------------------- | ---------------------------------------------------------- | ------------------------ |
 | Coordinador General         | Joaquín Peralta           | [@roahoki](https://github.com/roahoki) | jperaltaperez@uc.cl | 
 | Coordinadora Laboratorio         | Javiera Pinto           | [@javipipi](https://github.com/javipipi) | jpints@uc.cl |
+| Bienestar         | Catalina Quijada           | -- |  franciscaquijada@uc.cl |
+| Experto Cátedra         | Daniela Ríos           | [@Danielaarp](https://github.com/Danielaarp) | Danielaarp@uc.cl |
+|          | Alberto Maturana           | [@VANCOUVERMATU11](https://github.com/VANCOUVERMATU11) | alberto.maturana@uc.cl |
+| Cátedra Corrector          | José Mendoza           | [@Shoesuke](https://github.com/Shoesuke) | jfmendoza@uc.cl |
+|          | Tomás López           | [@Gansytom](https://github.com/Gansytom) | tomas.lopezm20@uc.cl |
+|          | Nicolás Romo           | [@NicolasRomoA](https://github.com/NicolasRomoA) | nicoromo2001@gmail.com |
+|          | Mario Rojas           | [@Couvenn](https://github.com/Couvenn) | mario.denzel@estudiante.uc.cl|
+|          | Fernanda Escobar           | -- | fer_jez2002@uc.cl|
+|          | Ignacio Gajardo           | -- |  gajardo.ignacio@uc.cl|
+| Laboratorio         | Felipe Quiñones           | [@FelipeQuinones](https://github.com/FelipeQuinones) | fquiones@uc.cl |
+|          | Alejandro Tapia           | [@LizBeeUC](https://github.com/LizBeeUC) | alejandro.tapia@uc.cl |
+|          | Jorge Parga           | [@cokeparga](https://github.com/cokeparga) | jorge.parga@uc.cl |
+|          | Claudio Mora           | [@3rdPix](https://github.com/3rdPix) | claudio.mora@uc.cl |
+|          | Vicente Cordero           | [@vicenteCordero](https://github.com/vicenteCordero) | vicente.cordero@uc.cl |
+|          | Martín Sánchez           | -- | martin.sanchez@uc.cl |
+|          | Maximiliano Navia           | -- |  mnavia1@uc.cl |
+
 
 ### Evaluaciones Escritas/Programación 
 

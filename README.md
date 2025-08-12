@@ -29,7 +29,6 @@ Bienvenido al syllabus del curso de Arquitectura de Computadores. En el reposito
 |          | Ignacio Gajardo           | -- |  gajardo.ignacio@uc.cl|
 | Laboratorio         | Felipe Quiñones           | [@FelipeQuinones](https://github.com/FelipeQuinones) | fquiones@uc.cl |
 |          | Alejandro Tapia           | [@LizBeeUC](https://github.com/LizBeeUC) | alejandro.tapia@uc.cl |
-|          | Jorge Parga           | [@cokeparga](https://github.com/cokeparga) | jorge.parga@uc.cl |
 |          | Claudio Mora           | [@3rdPix](https://github.com/3rdPix) | claudio.mora@uc.cl |
 |          | Vicente Cordero           | [@vicenteCordero](https://github.com/vicenteCordero) | vicente.cordero@uc.cl |
 |          | Martín Sánchez           | -- | martin.sanchez@uc.cl |

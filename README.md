@@ -18,7 +18,7 @@ Bienvenido al syllabus del curso de Arquitectura de Computadores. En el reposito
 | -------------------: | ---------------------------- | ---------------------------------------------------------- | ------------------------ |
 | Coordinador General         | Joaquín Peralta           | [@roahoki](https://github.com/roahoki) | jperaltaperez@uc.cl | 
 | Coordinadora Laboratorio         | Javiera Pinto           | [@javipipi](https://github.com/javipipi) | jpints@uc.cl |
-| Bienestar         | Catalina Quijada           | -- |  franciscaquijada@uc.cl |
+| Bienestar         | Francisca Quijada           | -- |  franciscaquijada@uc.cl |
 | Experto Cátedra         | Daniela Ríos           | [@Danielaarp](https://github.com/Danielaarp) | Danielaarp@uc.cl |
 |          | Alberto Maturana           | [@VANCOUVERMATU11](https://github.com/VANCOUVERMATU11) | alberto.maturana@uc.cl |
 | Cátedra Corrector          | José Mendoza           | [@Shoesuke](https://github.com/Shoesuke) | jfmendoza@uc.cl |
@@ -64,8 +64,8 @@ El proyecto de curso contará con 3 instancias de presentación de avance en las
 
 | Evaluación | Fecha                     |
 | :--------- | :------------------------ |
-| Entrega 1| semana del 22 de septiembre|
-| Entrega 2         | semana del 20 de octubre |
+| Entrega 1 | semana del 22 de septiembre|
+| Entrega 2 | semana del 20 de octubre |
 | Entrega 3 | semana del 17 de noviembre |
 
 

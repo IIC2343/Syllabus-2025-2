@@ -1,0 +1,157 @@
+DATA:
+
+CODE:
+
+MOV D, 0x1
+
+dead_end:
+    MOV A, 0xDEAD
+    MOV B, 0xDEAD
+    MOV C, 0xDEAD
+    HALT_ON_ERROR:
+    JMP HALT_ON_ERROR
+
+happy_ending:
+    MOV B, 0x1001
+    MOV B, C
+    MOV D, B
+    MOV A, 0xA001
+    ADD B, A
+    ADD C, B
+    HALT_ON_HAPPY:
+    JMP HALT_ON_HAPPY
+
+TEST_CMP:
+    MOV A, 1
+    MOV B, 1
+    CMP A, B
+    JNE dead_end
+    CMP A, 1
+    JNE dead_end
+    CMP B, 1
+    JNE dead_end
+    CMP C, 1
+    JNE dead_end
+    CMP D, 1
+    JNE dead_end
+    INC D
+TEST_CMP_OK:
+
+TEST_EQ:
+    ; verificar que no salte
+    MOV A, 0
+    MOV B, 1
+    CMP A, B
+    JEQ dead_end
+    ; verificar que salte
+    MOV C, 0
+    CMP C, 0
+    JEQ TEST_EQ_OK
+    JMP dead_end
+TEST_EQ_OK:
+INC D
+
+TEST_JNE:
+    ; verificar que no salte
+    CMP A, 0
+    JNE dead_end
+    ; verificar que salte
+    MOV B, 1
+    MOV C, 2
+    CMP B, C
+    JNE TEST_JNE_OK
+    JMP dead_end
+TEST_JNE_OK:
+INC D
+
+TEST_JGT:
+    ; verificar que no salte
+    CMP A, B
+    JGT dead_end
+    CMP A, 0
+    JGT dead_end
+    MOV B, 1
+    MOV C, 1
+    JGT dead_end
+    CMP C, 0
+    JGT dead_end
+    ; verificar que salte
+    CMP B, A
+    JGT TEST_JGT_OK
+    JMP dead_end
+TEST_JGT_OK:
+INC D
+
+TEST_JGE:
+    ; verificar que no salte
+    MOV A, 1
+    MOV B, 0
+    CMP A, B
+    JGE dead_end
+    MOV C, 1
+    CMP B, C
+    JGE dead_end
+    ; verificar que salte
+    CMP A, 1
+    JGE TEST_JGE_1
+    JMP dead_end
+  TEST_JGE_1:
+    CMP B, A
+    JGE TEST_JGE_OK
+    JMP dead_end
+TEST_JGE_OK:
+INC D
+
+TEST_JLT:
+    ; verificar que no salte
+    MOV A, 0
+    MOV B, 1
+    CMP A, B
+    JLT dead_end
+    CMP B, 1
+    JLT dead_end
+    CMP C, 1
+    JLT dead_end
+    ; verificar que salte
+    MOV C, 0
+    CMP B, C
+    JLT TEST_JLT_OK
+    JMP dead_end
+TEST_JLT_OK:
+INC D
+
+TEST_JLE:
+    ; verificar que no salte
+    MOV A, 1
+    MOV B, 0 
+    CMP B, A
+    JLE dead_end
+    CMP C, 2
+    JLE dead_end
+    ; verificar que salte
+    CMP A, 1
+    JLE TEST_JLE_1
+    JMP dead_end
+  TEST_JLE_1:
+    CMP B, C
+    JLE TEST_JLE_OK
+    JMP dead_end
+TEST_JLE_OK:
+INC D
+
+TEST_JCR:
+    ; verificar que no salte
+    MOV A, 1
+    MOV B, 1
+    ADD A, B
+    JCR dead_end
+    ; verificar que salte
+    ADD A, 0xFFFF
+    JCR TEST_JCR_1
+    JMP dead_end
+  TEST_JCR_1:
+    MOV A, 0
+TEST_JCR_OK:
+INC D
+JMP happy_ending
+; youtube.com/watch?v=GfQlfGyATpE

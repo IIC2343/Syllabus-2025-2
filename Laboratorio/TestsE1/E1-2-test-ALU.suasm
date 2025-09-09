@@ -1,0 +1,297 @@
+DATA:
+
+CODE:
+
+MOV A, 0
+MOV B, 5
+MOV C, 5
+MOV D, 5
+
+test_add:
+    ADD A, B ; A = 5
+    ADD A, C ; A = A
+    ADD A, D ; A = F
+    MOV A, 0
+
+    ADD B, C ; B = A
+    ADD B, D ; B = F
+    MOV A, B ; A = F
+    NOP
+    NOP
+    NOP
+    MOV A, 0
+
+    ADD C, D ; C = A
+    ADD C, D ; C = F
+    MOV A, C ; A = F
+    NOP
+    NOP
+    NOP
+    MOV A, 0
+
+    ADD D, 10 ; D = F
+    MOV A, D ; A = F
+    NOP
+    NOP
+    NOP
+    MOV A, 0
+
+test_sub:
+    MOV A, 0xf
+    MOV B, 0xf
+    MOV C, 0xf
+    MOV D, 0xf
+
+    SUB A, 5 ; A = A
+    MOV A, 0
+    NOP
+    NOP
+    NOP
+    SUB B, A ; B = A
+    MOV A, B
+    MOV A, 0
+    NOP
+    NOP
+    NOP
+    SUB C, B ; C = A
+    MOV A, C
+    MOV A, 0
+    NOP
+    NOP
+    NOP
+    SUB D, C ; D = A
+    MOV A, 0
+
+test_and:
+    MOV A, 0b1100
+    MOV B, 0b0110
+    AND A, B ; A = 0b0100
+    NOP
+    MOV A, 0xa
+    NOP
+
+    MOV C, 0b1001
+    MOV D, 0b1111
+    AND D, C
+    MOV A, D ; A = 0b1001
+    NOP
+    MOV A, 0xa
+    NOP
+
+    AND B, D
+    MOV A, B ; A = 0
+    NOP
+    MOV A, 0xa
+    NOP
+
+test_or:
+    MOV A, 0b1100
+    MOV B, 0b0010
+    OR A, B ; A = 0b1110
+    MOV C, 0b0000
+    OR A, C ; A = 0b1110
+    MOV D, 0b0001
+    OR A, D ; A = 0b1111
+    OR B, C
+    MOV A, B ; A = 0b0010
+
+test_xor:
+    MOV A, 0b1100
+    MOV B, 0b0010
+    XOR A, B ; A = 0b1110
+    MOV C, 0b0000
+    XOR A, C ; A = 0b1110
+    MOV D, 0b1001
+    XOR A, D ; A = 0b0111
+    MOV C, 0b1111
+    XOR A, C ; A = 0b1000
+    XOR A, 0b1000 ; A = 0
+
+test_not:
+    MOV A, 0x1111
+    NOT A ; A = 0xDDDD
+    NOP
+    MOV A, 0x1111
+    MOV B, 0x1111
+    NOT B
+    MOV A, B ; A = 0xDDDD
+    MOV A, 0x1111
+    NOP
+    MOV C, 0x1111
+    NOT C
+    MOV A, C ; A = 0xDDDD
+    NOP
+    MOV A, 0x1111
+    MOV D, 0x1111
+    NOT D
+    MOV A, D ; A = 0xDDDD
+
+test_shl:
+    MOV A, 0x1111
+    SHL A ; A = 0x2222
+    NOP
+    MOV A, 0x1111
+    MOV B, 0x1111
+    SHL B
+    MOV A, B ; A = 0x2222
+    NOP
+    MOV A, 0x1111
+    MOV C, 0x1111
+    SHL C
+    MOV A, C ; A = 0x2222
+    NOP
+    MOV A, 0x1111
+    MOV D, 0x1111
+    SHL D
+    MOV A, D; A = 0x2222
+    NOP
+
+test_shr:
+    MOV A, 0x1111
+    SHR A ; A = 0x888
+    NOP
+    MOV A, 0x1111
+    MOV B, 0x1111
+    SHR B
+    MOV A, B ; A = 0x888
+    NOP
+    MOV A, 0x1111
+    MOV C, 0x1111
+    SHR C
+    MOV A, C ; A = 0x888
+    NOP
+    MOV A, 0x1111
+    MOV D, 0x1111
+    SHR D
+    MOV A, D ; A = 0x888
+
+test_inc:
+    MOV A, 1
+    INC A ; A = 2
+    NOP
+    MOV B, 1
+    INC B
+    MOV A, 0xA
+    MOV A, B ; A = 2
+    NOP
+    MOV C, 1
+    INC C
+    MOV A, 0xA
+    MOV A, C ; A = 2
+    NOP
+    MOV D, 1
+    INC D
+    MOV A, 0xA
+    MOV A, D ; A = 2
+
+// Usualmente bastaría con un JMP pero dejamos este espacio
+// para verificar el resultado incluso si los saltos no
+// están correctamente implementados
+inicio_NOP:
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+end:
+JMP end

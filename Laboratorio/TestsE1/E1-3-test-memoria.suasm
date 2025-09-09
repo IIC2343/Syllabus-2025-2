@@ -1,0 +1,185 @@
+Esta prueba evalúa la funcionalidad de la conexión con el componente
+Random Access Memory. Se pone a prueba la lectura y la escritura, por
+direccionamiento directo y direccionamiento indirecto.
+
+DATA:
+var1 0
+var2 1
+var3 2
+libre 0
+
+CODE:
+
+prueba_1:
+MOV A, 1          ;-- 
+MOV (libre), A    ;-- Mem[libre] = 1
+MOV B, (libre)    ;-- RegB = 1
+SUB B, (libre)    ;-- RegB = 0
+MOV A, B          ;-- RegA = 0
+NOP
+
+prueba_2:
+INC (B)           ;-- Mem[var1] = 1
+MOV A, (B)        ;-- A = 1
+NOP
+
+prueba_3:
+MOV C, 0b1001     ;-- RegC      = 0b0000 0000 0000 1001
+NOT (var2), C     ;-- Mem[var2] = 0b1111 1111 1111 0110
+MOV A, (var2)     ;-- RegA      = 0b1111 1111 1111 0110 = 0xfff6
+NOP
+
+prueba_4:
+OR C, (var2)      ;-- RegC      = 0b1111 1111 1111 1111
+MOV A, C          ;-- RegA      = 0xffff
+NOP
+
+prueba_5:
+MOV D, var2
+NOT (D), C        ;-- Mem[var2] = 0
+MOV A, (var2)     ;-- RegA      = 0
+NOP
+
+prueba_6:
+MOV D, 0b1010
+AND D, (var2)     ;-- RegD = 0
+MOV A, D          ;-- RegA = 0
+NOP
+
+prueba_6:
+MOV C, 0b1001     ;-- RegC      = 0b0000 0000 0000 1001
+MOV D, var2
+MOV (D), 0b1101   ;-- Mem[var2] = 0b0000 0000 0000 1101
+XOR C, (D)        ;-- RegC      = 0b0000 0000 0000 0100
+MOV A, C          ;-- RegA      = 0x4
+NOP
+
+prueba_7:
+MOV B, 0x1111
+SHL (var3), B     ;-- Mem[var3] = 0x2222
+MOV A, (var3)     ;-- RegA      = 0x2222
+NOP
+
+prueba_8:
+MOV B, (var3)     ;-- RegB      = 0x2222
+SHR (var3), B     ;-- Mem[var3] = 0x1111
+MOV A, (var3)     ;-- RegA      = 0x1111
+NOP
+
+prueba_9:
+INC (libre)       ;-- Mem[libre] = 2
+MOV A, (libre)    ;-- RegA = 2
+NOP
+
+
+// Usualmente bastaría con un JMP pero dejamos este espacio
+// para verificar el resultado incluso si los saltos no
+// están correctamente implementados
+inicio_NOP:
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+NOP
+end:
+JMP end

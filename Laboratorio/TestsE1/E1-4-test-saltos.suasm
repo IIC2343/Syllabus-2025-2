@@ -4,6 +4,8 @@ CODE:
 
 MOV D, 0x1
 
+JMP TEST_CMP
+
 dead_end:
     MOV A, 0xDEAD
     MOV B, 0xDEAD

@@ -24,8 +24,9 @@ happy_ending:
     JMP HALT_ON_HAPPY
 
 TEST_CMP:
-    MOV A, 1
+    MOV A, 1	
     MOV B, 1
+    MOV C, 1
     CMP A, B
     JNE dead_end
     CMP A, 1

@@ -1,0 +1,160 @@
+DATA:
+
+;-- Espacios de memoria reservados para los componentes I/O
+  leds 0
+  switches 0
+  displays 0 
+  botones 0
+  timer_segundos 0 
+  timer_milisegundos 0 
+  timer_microsegundos 0
+
+;-- definiciones
+  boton_central 0b1
+  boton_superior 0b10
+  boton_izquierda 0b100
+  boton_derecha 0b1000
+  boton_inferior 0b10000
+
+;-- Memoria libre
+  semilla_aleatoria 0xb0e1
+  posicion_inicial_punto_1 4
+  posicion_inicial_punto_2 10
+  posicion_punto_1 0
+  posicion_punto_2 0
+
+CODE:
+JMP main
+
+  fn_revisar_boton_Lock:
+    ;-- Recibe en regA el botón a revisar
+    ;-- retorna en regA true o false
+    CMP A, (botones)
+    JNE _revisar_boton_false
+    _rb_safe_loop:
+    MOV A, 0
+    CMP A, (botones)
+    JNE _rb_safe_loop
+    MOV A, 1
+    RET
+    _revisar_boton_false:
+    MOV A, 0
+    RET
+
+  fn_ROL_A:
+    MOV B, 0x8000
+    AND B, A
+    SHL A
+    CMP B, 0x8000
+    JNE fn_ROL_A_exit
+    OR A, 1
+    fn_ROL_A_exit:
+      RET
+
+  fn_ROR_A:
+    MOV B, 1
+    AND B, A
+    SHR A
+    CMP B, 1
+    JNE fn_ROR_A_exit
+    OR A, 0x8000
+    fn_ROR_A_exit:
+      RET
+
+  main:
+
+    ;----------------------------------------;
+    //    Minijuego 1: juntar dos puntos    //
+    ;----------------------------------------;
+    MOV D, (posicion_inicial_punto_1)
+    MOV A, 1
+    desplazar_punto_1:
+      CMP D, 0
+      JEQ desplazar_punto_1_stop
+      DEC D
+      SHL A
+      JMP desplazar_punto_1
+    desplazar_punto_1_stop:
+    MOV D, (posicion_inicial_punto_2)
+    MOV B, 1
+    desplazar_punto_2:
+      CMP D, 0
+      JEQ desplazar_punto_2_stop
+      DEC D
+      SHL B
+      JMP desplazar_punto_2
+    desplazar_punto_2_stop:
+    MOV (posicion_punto_1), A
+    MOV (posicion_punto_2), B
+
+    esperar_movimientos:
+      comprobar_izquierda:
+        MOV A, (boton_izquierda)
+        CALL fn_revisar_boton_Lock
+        CMP A, 1
+        JNE comprobar_derecha
+        MOV A, (posicion_punto_1)
+        CALL fn_ROL_A
+        MOV (posicion_punto_1), A
+        JMP comprobar_colision
+
+      comprobar_derecha:
+        MOV A, (boton_derecha)
+        CALL fn_revisar_boton_Lock
+        CMP A, 1
+        JNE comprobar_arriba
+        MOV A, (posicion_punto_1)
+        CALL fn_ROR_A
+        MOV (posicion_punto_1), A
+        JMP comprobar_colision
+
+      comprobar_arriba:
+        MOV A, (boton_superior)
+        CALL fn_revisar_boton_Lock
+        CMP A, 1
+        JNE comprobar_abajo
+        MOV A, (posicion_punto_2)
+        CALL fn_ROL_A
+        MOV (posicion_punto_2), A
+        JMP comprobar_colision
+
+      comprobar_abajo:
+        MOV A, (boton_inferior)
+        CALL fn_revisar_boton_Lock
+        CMP A, 1
+        JNE comprobar_izquierda
+        MOV A, (posicion_punto_2)
+        CALL fn_ROR_A
+        MOV (posicion_punto_2), A
+        JMP comprobar_colision
+
+    comprobar_colision:
+      MOV A, (posicion_punto_1)
+      OR A, (posicion_punto_2)
+      MOV (leds), A
+      MOV A, (posicion_punto_1)
+      AND A, (posicion_punto_2)
+      CMP A, 0
+      JEQ esperar_movimientos
+      MOV (leds), A
+
+    ;----------------------------------------;
+    //    Minijuego 2: apretar en > 0.5     //
+    ;----------------------------------------;
+    loop_milisec:
+    MOV A, (timer_milisegundos)
+    MOV (displays), A
+    MOV B, (botones)
+    AND B, (boton_central)
+    CMP B, 0
+    JEQ loop_milisec
+    MOV A, (timer_milisegundos)
+    CMP A, 500
+    JLT loop_milisec
+
+  end:
+    MOV A, 0xA001
+    MOV (displays), A
+    JMP end
+
+;-- https://music.youtube.com/watch?v=RwrZPCKLs2E

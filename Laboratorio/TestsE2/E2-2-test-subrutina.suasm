@@ -1,0 +1,117 @@
+Este test comprueba la integridad de las subrutinas,
+los llamados necesarios para que se ejecuten correctamente.
+Para este test se asume que el funcionamiento de los componentes I/O
+es funcional para los displays.
+
+DATA:
+
+;-- Espacios de memoria reservados para los componentes I/O
+  leds 0
+  switches 0
+  displays 0 
+  botones 0
+  timer_segundos 0 
+  timer_milisegundos 0 
+  timer_microsegundos 0
+
+CODE:
+  JMP main
+
+  calcular_algoritmo_division_regA_div_regB:
+    ;-- Calcula los componentes del algoritmo de división
+    ;-- entre el registro A y registro B.
+    ;-- Retorna en C el múltiplo y en D el módulo.
+    MOV C, 0
+    MOV D, 0
+    fn_regA_div_regB_loop:
+      CMP A, B
+      JLT fn_regA_div_regB_loop_stop
+      SUB A, B
+      INC C
+      JMP fn_regA_div_regB_loop
+    fn_regA_div_regB_loop_stop:
+      MOV D, A
+    RET
+
+  detener_en_error:
+    JMP detener_en_error
+
+  calcular_fibonacci:
+    ;-- Retorna en regB el regA-ésimo valor de fibonacci
+    CMP A, 1
+    JLE fn_fibonacci_base
+    PUSH A
+    DEC A
+    CALL calcular_fibonacci
+    MOV C, B
+    POP A
+    SUB A, 2
+    PUSH C
+    CALL calcular_fibonacci
+    POP C
+    ADD B, C
+    RET
+    fn_fibonacci_base:
+      MOV B, A
+      RET
+
+  main:
+
+    // Subrutina simple
+    MOV C, 0
+    MOV D, 0
+    MOV A, 16
+    MOV B, 3
+    CALL calcular_algoritmo_division_regA_div_regB
+    CMP C, 5
+    JNE detener_en_error
+    CMP D, 1
+    JNE detener_en_error
+
+    // Guardar en stack
+    PUSH C
+    PUSH D
+    MOV A, C
+    MOV B, D
+    CALL calcular_algoritmo_division_regA_div_regB
+    POP A
+    POP B
+    CMP A, 1
+    JNE detener_en_error
+    CMP B, 5
+    JNE detener_en_error
+    CMP C, 5
+    JNE detener_en_error
+    CMP D, 0
+    JNE detener_en_error
+
+    // Stack stress
+    MOV A, 0
+    CALL calcular_fibonacci
+    CMP B, 0
+    JNE detener_en_error
+    MOV A, 1
+    CALL calcular_fibonacci
+    CMP B, 1
+    JNE detener_en_error
+    MOV A, 16
+    CALL calcular_fibonacci
+    CMP B, 987
+    JNE detener_en_error
+
+    // Forzar error
+    MOV A, 0x1010
+    MOV (displays), A
+    MOV A, 4093
+    while_less:
+      CMP A, 0
+      JEQ while_stop
+      PUSH A
+      DEC A
+      JMP while_less
+    while_stop:
+    MOV A, 0xA001
+    PUSH A
+
+    detener_en_feliz:
+      JMP detener_en_feliz

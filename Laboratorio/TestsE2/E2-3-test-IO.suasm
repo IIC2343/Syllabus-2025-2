@@ -1,0 +1,30 @@
+DATA:
+
+;-- Espacios de memoria reservados para los componentes I/O
+  leds 0
+  switches 0
+  displays 0 
+  botones 0
+  timer_segundos 0 
+  timer_milisegundos 0 
+  timer_microsegundos 0
+
+;-- Memoria libre
+  valor_a_igualar 0b1111000011110001
+  boton_a_presionar 0b10000
+
+CODE:
+  MOV A, (valor_a_igualar)
+  MOV (leds), A
+  esperar_switches:
+    MOV B, (switches)
+    CMP A, B
+    JNE esperar_switches
+  MOV A, (boton_a_presionar)
+  esperar_boton:
+    CMP A, (botones)
+    JNE esperar_boton
+  MOV A, 0xA001
+  MOV (displays), A
+  final_feliz:
+    JMP final_feliz

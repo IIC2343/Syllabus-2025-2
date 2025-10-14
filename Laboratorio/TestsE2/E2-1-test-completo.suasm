@@ -1,0 +1,849 @@
+Este es el test que se utilizará para la corrección de la segunda entrega.
+Lo mínimo necesario es el correcto funcionamiento de los saltos.
+A partir de ahí, se comprueba la integridad funcional de todas las
+instrucciones de la ISA.
+
+DATA:
+
+;-- Espacios de memoria reservados para los componentes I/O
+  leds 0
+  switches 0
+  displays 0 
+  botones 0
+  timer_segundos 0 
+  timer_milisegundos 0 
+  timer_microsegundos 0
+
+codigo_muerte 0xDEAD
+codigo_feliz 0xA001
+base_transform 0x1001
+avance 0x1
+libre 0
+CODE:
+
+////////////////////////////////////////
+//    PROBAR INSTRUCCIONES MINIMAS   //
+//////////////////////////////////////
+
+MOV A, 0
+MOV B, 1
+MOV C, 2
+MOV D, 3
+JMP main
+
+; ==== endings ====
+dead_end:
+    MOV A, (codigo_muerte)
+    MOV B, (codigo_muerte)
+    MOV C, (codigo_muerte)
+    MOV D, (avance)
+    HALT_ON_ERROR:
+    MOV (displays), A
+    JMP HALT_ON_ERROR
+
+happy_ending:
+    MOV A, (codigo_feliz)
+    MOV B, A
+    ADD B, 0x1000
+    MOV C, B
+    ADD C, 0x1000
+    MOV D, C
+    ADD D, 0x1000
+    HALT_ON_HAPPY:
+    MOV (displays), A
+    JMP HALT_ON_HAPPY
+
+main:
+; ==== pruebas ====
+TEST_EQ:
+    INC (avance)
+    ; verificar que no salte
+    MOV A, 0
+    MOV B, 1
+    CMP A, B
+    JEQ dead_end
+    ; verificar que salte
+    CMP A, 0
+    JEQ TEST_EQ_OK
+    JMP dead_end
+TEST_EQ_OK:
+
+
+TEST_JNE:
+    INC (avance)
+    ; verificar que no salte
+    MOV A, 0
+    CMP A, 0
+    JNE dead_end
+    ; verificar que salte
+    MOV B, 7
+    CMP A, B
+    JNE TEST_JNE_OK
+    JMP dead_end
+TEST_JNE_OK:
+
+
+TEST_JGT:
+    INC (avance)
+    ; verificar que no salte
+    MOV A, 6
+    MOV B, 7
+    CMP A, B
+    JGT dead_end
+    CMP A, 6
+    JGT dead_end
+    ; verificar que salte
+    CMP B, A
+    JGT TEST_JGT_OK
+    JMP dead_end
+TEST_JGT_OK:
+
+
+TEST_JGE:
+    INC (avance)
+    ; verificar que no salte
+    MOV A, 5
+    MOV B, 6
+    CMP A, B
+    JGE dead_end
+    ; verificar que salte
+    CMP B, 6
+    JGE TEST_JGE_1
+    JMP dead_end
+  TEST_JGE_1:
+    MOV A, 6
+    CMP B, A
+    JGE TEST_JGE_OK
+    JMP dead_end
+TEST_JGE_OK:
+
+
+TEST_JLT:
+    INC (avance)
+    ; verificar que no salte
+    MOV A, 5
+    MOV B, 6
+    CMP B, A
+    JLT dead_end
+    CMP B, 6
+    JLT dead_end
+    ; verificar que salte
+    MOV C, 10
+    CMP B, C
+    JLT TEST_JLT_OK
+    JMP dead_end
+TEST_JLT_OK:
+
+
+TEST_JLE:
+    INC (avance)
+    ; verificar que no salte
+    MOV A, 5
+    MOV B, 6
+    CMP B, A
+    JLE dead_end
+    ; verificar que salte
+    CMP B, 6
+    JLE TEST_JLE_1
+    JMP dead_end
+  TEST_JLE_1:
+    MOV C, 8
+    CMP B, C
+    JLE TEST_JLE_OK
+    JMP dead_end
+TEST_JLE_OK:
+
+
+TEST_JCR:
+    INC (avance)
+    ; verificar que no salte
+    MOV A, 1
+    MOV B, 1
+    ADD A, B
+    JCR dead_end
+    ; verificar que salte
+    MOV A, 1
+    ADD A, 0xFFFF
+    JCR TEST_JCR_1
+    JMP dead_end
+  TEST_JCR_1:
+    MOV A, 0
+TEST_JCR_OK:
+
+TEST_CMP:
+    INC (avance)
+    MOV A, 0
+    MOV (libre), A
+    CMP A, (libre)
+    JNE dead_end
+    MOV B, libre
+    CMP A, (B)
+    JNE dead_end
+TEST_CMP_OK:
+
+TEST_DEC:
+    INC (avance)
+        MOV A, 1
+        DEC A
+        CMP A, 0
+    JNE dead_end
+        MOV B, 1
+        DEC B
+        CMP B, 0
+    JNE dead_end
+        MOV C, 1
+        DEC C
+        CMP C, 0
+    JNE dead_end
+        MOV D, 1
+        DEC D
+        CMP D, 0
+    JNE dead_end
+TEST_DEC_OK:
+
+TEST_INC:
+    INC (avance)
+    ; incremento registros directamente
+        MOV A, 1
+        INC A
+        CMP A, 2
+    JNE dead_end
+        MOV B, 1
+        INC B
+        CMP B, 2
+    JNE dead_end
+        MOV C, 1
+        INC C
+        CMP C, 2
+    JNE dead_end
+        MOV D, 1
+        INC D
+        CMP D, 2
+    JNE dead_end
+    ; comprobar incremento de memoria
+    MOV A, 0xabcc
+    MOV (libre), A
+    INC (libre)
+    MOV A, (libre)
+    CMP A, 0xabcd
+    JNE dead_end
+    ; comprobar indireccion
+        MOV A, 0x21
+        MOV (libre), A
+        MOV A, libre
+        INC (A)
+        MOV A, (libre)
+        CMP A, 0x22
+    JNE dead_end
+        MOV B, 0x21
+        MOV (libre), B
+        MOV B, libre
+        INC (B)
+        MOV B, (libre)
+        CMP B, 0x22
+    JNE dead_end
+        MOV C, 0x21
+        MOV (libre), C
+        MOV C, libre
+        INC (C)
+        MOV C, (libre)
+        CMP C, 0x22
+    JNE dead_end
+        MOV D, 0x21
+        MOV (libre), D
+        MOV D, libre
+        INC (D)
+        MOV D, (libre)
+        CMP D, 0x22
+    JNE dead_end
+TEST_INC_OK:
+
+TEST_NOT:
+    INC (avance)
+    
+    ; registros directamente
+        MOV A, 0x1111
+        NOT A
+        CMP A, 0xeeee
+    JNE dead_end
+        MOV B, 0x1111
+        NOT B
+        CMP B, 0xeeee
+    JNE dead_end
+        MOV C, 0x1111
+        NOT C
+        CMP C, 0xeeee
+    JNE dead_end
+        MOV D, 0x1111
+        NOT D
+        CMP D, 0xeeee
+    JNE dead_end
+    ; de registro a memoria
+        MOV A, 0x1111
+        NOT (libre), A
+        CMP A, 0x1111
+        JNE dead_end // A no debe ser modificado aquí
+        MOV A, (libre)
+        CMP A, 0xeeee // Ahora debería actualizarse con el valor de la memoria
+    JNE dead_end
+        MOV B, 0x1111
+        NOT (libre), B
+        CMP B, 0x1111
+        JNE dead_end
+        MOV B, (libre)
+        CMP B, 0xeeee
+    JNE dead_end
+        MOV C, 0x1111
+        NOT (libre), C
+        CMP C, 0x1111
+        JNE dead_end
+        MOV C, (libre)
+        CMP C, 0xeeee
+    JNE dead_end
+        MOV D, 0x1111
+        NOT (libre), D
+        CMP D, 0x1111
+        JNE dead_end
+        MOV D, (libre)
+        CMP D, 0xeeee
+    JNE dead_end
+
+    ; reg- indireccion
+        MOV A, 0x1111
+        MOV B, libre
+        NOT (B), A
+        MOV A, (libre)
+        CMP A, 0xeeee
+    JNE dead_end
+        MOV B, 0x1111
+        MOV A, libre
+        NOT (A), B
+        MOV B, (libre)
+        CMP B, 0xeeee
+    JNE dead_end
+        MOV A, 0x1111
+        MOV C, libre
+        NOT (C), A
+        MOV A, (libre)
+        CMP A, 0xeeee
+    JNE dead_end
+        MOV A, 0x1111
+        MOV D, libre
+        NOT (D), A
+        MOV A, (libre)
+        CMP A, 0xeeee
+    JNE dead_end
+TEST_NOT_OK:
+
+TEST_SHL:
+    INC (avance)
+    
+    ; registros directamente
+        MOV A, 0x1111
+        SHL A
+        CMP A, 0x2222
+    JNE dead_end
+        MOV B, 0x1111
+        SHL B
+        CMP B, 0x2222
+    JNE dead_end
+        MOV C, 0x1111
+        SHL C
+        CMP C, 0x2222
+    JNE dead_end
+        MOV D, 0x1111
+        SHL D
+        CMP D, 0x2222
+    
+    ; de registro a memoria
+        MOV A, 0x1111
+        SHL (libre), A
+        CMP A, 0x1111
+        JNE dead_end
+        MOV A, (libre)
+        CMP A, 0x2222
+    JNE dead_end
+        MOV B, 0x1111
+        SHL (libre), B
+        CMP B, 0x1111
+        JNE dead_end
+        MOV B, (libre)
+        CMP B, 0x2222
+    JNE dead_end
+        MOV C, 0x1111
+        SHL (libre), C
+        CMP C, 0x1111
+        JNE dead_end
+        MOV C, (libre)
+        CMP C, 0x2222
+    JNE dead_end
+        MOV D, 0x1111
+        SHL (libre), D
+        CMP D, 0x1111
+        JNE dead_end
+        MOV D, (libre)
+        CMP D, 0x2222
+    JNE dead_end
+
+    ; reg- indireccion
+        MOV A, 0x1111
+        MOV B, libre
+        SHL (B), A
+        MOV A, (libre)
+        CMP A, 0x2222
+    JNE dead_end
+        MOV B, 0x1111
+        MOV A, libre
+        SHL (A), B
+        MOV B, (libre)
+        CMP B, 0x2222
+    JNE dead_end
+        MOV A, 0x1111
+        MOV C, libre
+        SHL (C), A
+        MOV A, (libre)
+        CMP A, 0x2222
+    JNE dead_end
+        MOV A, 0x1111
+        MOV D, libre
+        SHL (D), A
+        MOV A, (libre)
+        CMP A, 0x2222
+    JNE dead_end
+TEST_SHL_OK:
+
+TEST_SHR:
+    INC (avance)
+    
+    ; registros directamente
+        MOV A, 0x1111
+        SHR A
+        CMP A, 0x888
+    JNE dead_end
+        MOV B, 0x1111
+        SHR B
+        CMP B, 0x888
+    JNE dead_end
+        MOV C, 0x1111
+        SHR C
+        CMP C, 0x888
+    JNE dead_end
+        MOV D, 0x1111
+        SHR D
+        CMP D, 0x888
+    
+    ; de registro a memoria
+        MOV A, 0x1111
+        SHR (libre), A
+        CMP A, 0x1111
+        JNE dead_end
+        MOV A, (libre)
+        CMP A, 0x888
+    JNE dead_end
+        MOV B, 0x1111
+        SHR (libre), B
+        CMP B, 0x1111
+        JNE dead_end
+        MOV B, (libre)
+        CMP B, 0x888
+    JNE dead_end
+        MOV C, 0x1111
+        SHR (libre), C
+        CMP C, 0x1111
+        JNE dead_end
+        MOV C, (libre)
+        CMP C, 0x888
+    JNE dead_end
+        MOV D, 0x1111
+        SHR (libre), D
+        CMP D, 0x1111
+        JNE dead_end
+        MOV D, (libre)
+        CMP D, 0x888
+    JNE dead_end
+
+    ; reg- indireccion
+        MOV A, 0x1111
+        MOV B, libre
+        SHR (B), A
+        MOV A, (libre)
+        CMP A, 0x888
+    JNE dead_end
+        MOV B, 0x1111
+        MOV A, libre
+        SHR (A), B
+        MOV B, (libre)
+        CMP B, 0x888
+    JNE dead_end
+        MOV A, 0x1111
+        MOV C, libre
+        SHR (C), A
+        MOV A, (libre)
+        CMP A, 0x888
+    JNE dead_end
+        MOV A, 0x1111
+        MOV D, libre
+        SHR (D), A
+        MOV A, (libre)
+        CMP A, 0x888
+    JNE dead_end
+TEST_SHR_OK:
+
+TEST_ADD:
+    INC (avance)
+    MOV A, 0x3333
+    MOV B, 0x3333
+    MOV C, 0xCCCC
+    MOV D, 0xCCCC
+    ADD A, C
+    ADD C, B
+    ADD B, D
+    CMP A, 0xFFFF
+    JNE dead_end
+    CMP B, 0xFFFF
+    JNE dead_end
+    CMP C, 0xFFFF
+    JNE dead_end
+    MOV C, 0x3333 
+    ADD D, C
+    CMP D, 0xFFFF
+    JNE dead_end
+    ; memoria
+    MOV A, 0xCCCC
+    MOV (libre), A
+    MOV A, 0x3333
+    MOV B, 0x3333
+    MOV C, 0x3333
+    MOV D, 0x3333
+    ADD A, (libre)
+    ADD B, (libre)
+    ADD C, (libre)
+    ADD D, (libre)
+    CMP A, 0xFFFF
+    JNE dead_end
+    CMP B, 0xFFFF
+    JNE dead_end
+    CMP C, 0xFFFF
+    JNE dead_end
+    CMP D, 0xFFFF
+    JNE dead_end
+    ; indireccion
+    MOV A, 0x1111
+    MOV (libre), A
+    MOV A, 0
+    MOV B, libre
+    MOV C, libre
+    MOV D, libre
+    ADD A, (B)
+    ADD A, (C)
+    ADD A, (D)
+    MOV B, A
+    MOV A, libre
+    ADD B, (A)
+    CMP B, 0x4444
+    JNE dead_end
+    ; literal
+    MOV A, 1
+    MOV B, 2
+    MOV C, 3
+    MOV D, 4
+    ADD A, 0xae
+    ADD B, 0xad
+    ADD C, 0xac
+    ADD D, 0xab
+    CMP A, 0xaf
+    JNE dead_end
+    CMP B, 0xaf
+    JNE dead_end
+    CMP C, 0xaf
+    JNE dead_end
+    CMP D, 0xaf
+    JNE dead_end
+    ; ni se que es esto
+    MOV A, 1
+    MOV B, 2
+    ADD (libre)
+    MOV C, (libre)
+    CMP C, 3
+    JNE dead_end
+TEST_ADD_OK:
+
+TEST_SUB:
+    INC (avance)
+    MOV A, 0xFFFF
+    MOV B, 0xFFFF
+    MOV C, 0xCCCC
+    MOV D, 0xCCCC
+    SUB A, D
+    SUB B, C
+    CMP A, 0x3333
+    JNE dead_end
+    CMP B, 0x3333
+    JNE dead_end
+    ; memoria
+    MOV A, 0x3333
+    MOV (libre), A
+    MOV A, 0xFFFF
+    MOV B, 0xFFFF
+    MOV C, 0xFFFF
+    MOV D, 0xFFFF
+    SUB A, (libre)
+    SUB B, (libre)
+    SUB C, (libre)
+    SUB D, (libre)
+    CMP A, 0xCCCC
+    JNE dead_end
+    CMP B, 0xCCCC
+    JNE dead_end
+    CMP C, 0xCCCC
+    JNE dead_end
+    CMP D, 0xCCCC
+    JNE dead_end
+    ; indireccion
+    MOV A, 0x1111
+    MOV (libre), A
+    MOV A, 0xFFFF
+    MOV B, libre
+    MOV C, libre
+    MOV D, libre
+    SUB A, (B)
+    SUB A, (C)
+    SUB A, (D)
+    MOV B, A
+    MOV A, libre
+    SUB B, (A)
+    CMP B, 0xBBBB
+    JNE dead_end
+    ; literal
+    MOV A, 11
+    MOV B, 10
+    MOV C, 9
+    MOV D, 8
+    SUB A, 6
+    SUB B, 5
+    SUB C, 4
+    SUB D, 3
+    CMP A, 5
+    JNE dead_end
+    CMP B, 5
+    JNE dead_end
+    CMP C, 5
+    JNE dead_end
+    CMP D, 5
+    JNE dead_end
+    ; ni se que es esto
+    MOV A, 2
+    MOV B, 1
+    SUB (libre)
+    MOV C, (libre)
+    CMP C, 1
+    JNE dead_end
+TEST_SUB_OK:
+
+TEST_AND:
+    INC (avance)
+    MOV A, 0b1100
+    MOV B, 0b0110
+    AND A, B
+    CMP A, 0b0100
+    JNE dead_end
+    MOV C, 0b1001
+    MOV D, 0b1111
+    AND D, C
+    CMP D, 0b1001
+    JNE dead_end
+    AND B, D
+    CMP B, 0
+    JNE dead_end
+    ; literal
+        MOV A, 0b1100
+        AND A, 0b1000
+        CMP A, 0b1000
+    JNE dead_end
+        MOV B, 0b1100
+        AND B, 0b0100
+        CMP B, 0b0100
+    JNE dead_end
+        MOV C, 0b0011
+        AND C, 0b1111
+        CMP C, 0b0011
+    JNE dead_end
+        MOV D, 0b0001
+        AND D, 0
+        CMP D, 0
+    JNE dead_end
+TEST_AND_OK:
+
+TEST_OR:
+    INC (avance)
+    MOV A, 0b1100
+    MOV B, 0b0010
+    OR A, B
+    CMP A, 0b1110
+    JNE dead_end
+    MOV C, 0b0000
+    OR A, C
+    CMP A, 0b1110
+    JNE dead_end
+    OR A, 0b1000
+    CMP A, 0b1110
+    JNE dead_end
+    MOV C, 0b0000
+    OR C, 0b1111
+    CMP C, 0b1111
+    JNE dead_end
+    ; literal
+        MOV A, 0b1111
+        OR A, 0
+        CMP A, 0b1111
+    JNE dead_end
+        MOV B, 0b0010
+        OR B, 0b1000
+        CMP B, 0b1010
+    JNE dead_end
+        MOV C, 0b11
+        OR C, 0b1100
+        CMP C, 0b1111
+    JNE dead_end
+        MOV D, 0b1010
+        OR D, 0b0010
+        CMP D, 0b1010
+    JNE dead_end
+    ; direccion
+    MOV A, 0b1000
+    MOV (libre), A
+    MOV A, 0b0001
+    MOV B, 0b0010
+    MOV C, 0b0100
+    MOV D, 0b1000
+        OR A, (libre)
+        CMP A, 0b1001
+    JNE dead_end
+        OR B, (libre)
+        CMP B, 0b1010
+    JNE dead_end
+        OR C, (libre)
+        CMP C, 0b1100
+    JNE dead_end
+        OR D, (libre)
+        CMP D, 0b1000
+    JNE dead_end
+TEST_OR_OK:
+
+TEST_XOR:
+    INC (avance)
+    MOV A, 0b1100
+    MOV B, 0b0010
+    XOR A, B
+    CMP A, 0b1110
+    JNE dead_end
+    MOV C, 0b0000
+    XOR A, C
+    CMP A, 0b1110
+    JNE dead_end
+    XOR A, 0b1000
+    CMP A, 0b0110
+    JNE dead_end
+    MOV C, 0b0000
+    XOR C, 0b1111
+    CMP C, 0b1111
+    JNE dead_end
+    ; literal
+        MOV A, 0b1111
+        XOR A, 0
+        CMP A, 0b1111
+    JNE dead_end
+        MOV B, 0b0010
+        XOR B, 0b1000
+        CMP B, 0b1010
+    JNE dead_end
+        MOV C, 0b11
+        XOR C, 0b1100
+        CMP C, 0b1111
+    JNE dead_end
+        MOV D, 0b1010
+        XOR D, 0b0010
+        CMP D, 0b1000
+    JNE dead_end
+    ; direccion
+    MOV A, 0b1000
+    MOV (libre), A
+    MOV A, 0b0001
+    MOV B, 0b0010
+    MOV C, 0b0100
+    MOV D, 0b1000
+        XOR A, (libre)
+        CMP A, 0b1001
+    JNE dead_end
+        XOR B, (libre)
+        CMP B, 0b1010
+    JNE dead_end
+        XOR C, (libre)
+        CMP C, 0b1100
+    JNE dead_end
+        XOR D, (libre)
+        CMP D, 0
+    JNE dead_end
+TEST_XOR_OK:
+
+TEST_MOV:
+    INC (avance)
+    ; literales
+        MOV A, 1
+        CMP A, 1
+    JNE dead_end
+        MOV B, 2
+        CMP B, 2
+    JNE dead_end
+        MOV C, 3
+        CMP C, 3
+    JNE dead_end
+        MOV D, 4
+        CMP D, 4
+    JNE dead_end
+    ; registros
+    MOV A, B
+    CMP A, B
+    JNE dead_end
+    MOV D, B
+    CMP D, B
+    JNE dead_end
+    MOV C, D
+    CMP D, C
+    JNE dead_end
+    ; memoria
+    MOV A, (codigo_muerte)
+    CMP A, 0xDEAD
+    JNE dead_end
+    ; a memoria
+    MOV A, 1714
+    MOV (libre), A
+    MOV B, (libre)
+    CMP B, 1714
+    JNE dead_end
+    ; memoria indirecta
+    MOV D, codigo_muerte
+    MOV C, (D)
+    CMP C, 0xDEAD
+    JNE dead_end
+    ; a memoria indirecta
+    MOV C, libre
+    MOV A, 2025
+    MOV (C), A
+    MOV D, (libre)
+    CMP D, 2025
+    JNE dead_end
+    ; lit a memoria indirecta
+    MOV A, libre
+    MOV (A), 3
+    MOV B, (libre)
+    CMP B, 3
+    JNE dead_end
+TEST_MOV_OK:
+
+final:
+    MOV A, (avance)
+    CMP A, 20
+    JNE dead_end
+    JMP happy_ending
+    // :-)
